@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import youtube from '@yimura/scraper'
 
 export const app = express();
 
@@ -16,9 +17,17 @@ app.get('/', (req, res) => {
 
 const api = express.Router();
 
-api.get('/hello', (req, res) => {
-  res.status(200).send({ message: 'hello world' });
+api.get('/getsongslist', (req, res) => {
+  try {
+    const { song, artist } = req.query;
+    // @ts-ignore
+    const yt = new youtube.default();
+    yt.search(`${song} ${artist}`).then(results => {
+      res.send(results.videos);
+    });
+  } catch (error) {
+    res.send(error);
+  }
 });
-
 // Version the api
 app.use('/api/v1', api);

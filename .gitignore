@@ -27,5 +27,7 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
+public/
+
 # out dir
 dist/

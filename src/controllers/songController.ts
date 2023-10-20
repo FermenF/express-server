@@ -44,11 +44,12 @@ async function getSong(id, res: Response){
     try {
         const audioFilePath = path.join(__dirname, '../../public', `${id}.mp4`);
 
-        return res.sendFile(audioFilePath, (err) => {
+        return res.status(200).sendFile(audioFilePath, (err) => {
             if (err) {
                 res.status(500).send('Error sending audio file. ' + err);
             }
         });
+        
     } catch (error) {
         throw res.send(error);
     }

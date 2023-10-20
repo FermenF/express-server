@@ -1,17 +1,28 @@
-import mongoose from 'mongoose';
+import { MongoClient, ServerApiVersion } from 'mongodb';
 import config from './config';
 
-mongoose.connect(config.DB.URI);
+const uri = config.DB.URI+config.DB.USER+config.DB.PASSWORD+config.DB.EXT;
 
-const connection = mongoose.connection;
+console.log(uri);
 
-connection.once('open', () => {
-    console.log("Connection with mongodb stablished");
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
 });
 
-connection.on('error', (err) => {
-    console.log(err);
-    process.exit(0);
-});
-
-export default mongoose;
+async function run() {
+  try {
+    // Connect the client to the server	(optional starting in v4.7)
+    await client.connect();
+    // Send a ping to confirm a successful connection
+    await client.db("admin").command({ ping: 1 });
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
+  }
+}
+run().catch(console.dir);
